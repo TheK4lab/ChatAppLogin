@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat App</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script>
+            $(() => {
+                $('#esci').click((e) => {
+                    e.preventDefault();
+                    console.log("Click su logout");
+                    const cookie = document.cookie.split('=');
+                    const token = cookie[1].toString();
+                    console.log(token);
+
+                    $.ajax({
+                    type:'POST',
+                    data: token,
+                    dataType: 'json',
+                    url: "http://localhost:3000/logoutajax",
+
+                    beforeSend: () => {
+                        console.log("Richiesta in corso...");
+                    },
+                    success: () => {
+                        console.log("success");
+                        if(confirm("Alla prossima! Clicca su ok per uscire")){
+                            window.location.href = "index.html";
+                        }
+                    },
+                    error: (error) => {
+                        console.log(error);
+                        alert("Qualcosa è andato storto: " + error.responseJSON);
+                    }
+                });
+            });
+        });
+        </script>
+    </head>
+
+    <body>
+        <div class="chat">
+            <div id="sidebar" class="chat__sidebar">
+            </div>
+            <form method="POST" action="" class="sidebar__logout">
+                <button id="esci">Logout</button>
+            </form>
+            <div class="chat__main">
+                <div id="messages" class="chat__messages"></div>
+
+                <div class="compose">
+                    <form id="message-form">
+                        <input name ="message" placeholder="message" required autocomplete="off">
+                        <button>Invia</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script id="message-template" type="text/html">
+            <div class="message">
+                <p>
+                    <span class="message__name">{{username}}</span>
+                    <span class="message__meta">{{createdAt}}</span>
+                <p>{{message}}</p>
+            </div>
+        </script>
+
+        <script id="sidebar-template" type="text/html">
+            <h2 class="room-title">{{room}}</h2>
+            <h3 class="list-title">Utenti online</h3>
+            <ul class="users">
+                {{#users}}
+                    <li>{{username}}</li>
+                {{/users}}
+            </ul>
+        </script>
+
+        <!-- Mustache => templating, tutto ciò che è dentro {{queste parentesi}} -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+        <!--Moment => Per indicare l'ora dei messaggi -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+        <!--Qs => Query String, per settare i nomi degli utenti e le chatroom  -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/chat.js"></script>
+    </body>
+</html>

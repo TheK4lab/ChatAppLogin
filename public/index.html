@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat App</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script>
+            $(() => {
+                $('#submit').click((e) => {
+                    e.preventDefault();
+                    console.log("Click su login");
+                    const data = {
+                        email: $('#email').val(),
+                        password: $('#password').val()
+                    }
+
+                    $.ajax({
+                    type:'POST',
+                    data: data,
+                    dataType: 'json',
+                    url: 'http://localhost:3000/loginajax',
+
+                    beforeSend: () => {
+                        console.log("Richiesta in corso...");
+                    },
+                    success: (data) => {
+                        console.log(data);
+                        if(confirm("Sei loggato! Clicca su ok per entrare in chat")){
+                            window.location.href = "setup.html";
+                        }
+                    },
+                    error: (error) => {
+                        console.log(data);
+                        console.log(error);
+                        alert("Qualcosa è andato storto: " + error.responseJSON);
+                    }
+                });
+            });
+        });
+        </script>
+    </head>
+
+    <body>
+        <div class="centered-form">
+            <div class="centered-form__box">
+                <h1>Effettua il Login</h1>
+                <form method="post" action="">
+                <!-- <form method="post" action="/login"> -->
+                    <label>La tua email</label>
+                    <input id="email" type="text" name="email" placeholder="E-mail" required>
+                    <label>Password</label>
+                    <input id="password" type="password" name="password" placeholder="Password" required>
+                    <button id="submit">Login</button>
+                    <small><a href="signup.html">Registrati</a></small>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
